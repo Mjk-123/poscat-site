@@ -83,10 +83,10 @@ const SESSIONS = [
     papers: [{ title: "Let's Verify Step by Step (sample)", href: "https://openreview.net/forum?id=v8L0pN6EOi", src: "OpenReview" }] },
   { date: "Oct 15" },
   { date: "Nov 5" },
-  { date: "Nov 12" },
-  { date: "Nov 19" },
-  { date: "Nov 26" },
-  { date: "Dec 3" },
+  { date: "Nov 12", who: "정현" },
+  { date: "Nov 19", who: "이우진, 장홍준" },
+  { date: "Nov 26", who: "고정윤" },
+  { date: "Dec 3", who: "정채현" },
   { date: "Dec 10" }
 ];
 
@@ -96,7 +96,7 @@ SESSIONS.forEach((s, i) => {
   const no = `<span class="no">${i + 1}</span>`;
   if (!s.title) {
     li.className = 'pending';
-    li.innerHTML = `<div class="row">${no}<span class="date">${s.date || 'Date TBA'}</span><span class="title">To be announced</span><span class="who">—</span><span></span></div>`;
+    li.innerHTML = `<div class="row">${no}<span class="date">${s.date || 'Date TBA'}</span><span class="title">To be announced</span><span class="who">${s.who || '—'}</span><span></span></div>`;
   } else {
     const papers = (s.papers || []).map(p =>
       `<li><a href="${p.href}" target="_blank" rel="noopener">${p.title}${p.src ? `<span>${p.src}</span>` : ''}</a></li>`).join('');
