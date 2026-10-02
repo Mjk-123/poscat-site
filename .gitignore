@@ -1,0 +1,4 @@
+_preview/
+*.bak
+.DS_Store
+.claude/

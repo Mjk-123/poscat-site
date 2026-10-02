@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reading — POSCAT AI Study</title>
+<meta name="description" content="Optional starting points for the POSCAT AI Study: RL and alignment, interpretability, and security.">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body id="top">
+<header class="top" id="masthead">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img src="assets/poscat.png" alt="" width="44" height="44">
+      <div><b>POSCAT AI Study</b><span>POSTECH Algorithm &amp; AI Club · 2nd semester</span></div>
+    </a>
+    <nav aria-label="Sections">
+      <a href="index.html#sessions">Sessions</a>
+      <a href="reading.html" aria-current="page">Reading</a>
+      <a href="game.html">Mini game</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-head">
+    <div class="wrap">
+      <h1>Where to start reading</h1>
+      <p>Optional reading, not assigned session material. One entry point for each part of the semester.</p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="wrap">
+      <div class="shelf">
+        <article>
+          <div class="stage-name">RL &amp; Alignment</div>
+          <h3>Learning from feedback</h3>
+          <p>Explore how human feedback shapes a model. Start with the pipeline: supervised fine-tuning, reward modeling, and RL.</p>
+          <a class="paper" href="https://arxiv.org/abs/2203.02155" target="_blank" rel="noopener">Training language models to follow instructions with human feedback<em>arXiv 2203.02155</em></a>
+          <div class="pre">Helps to know: supervised learning, rewards</div>
+        </article>
+        <article>
+          <div class="stage-name">Interpretability</div>
+          <h3>Inside the model</h3>
+          <p>Why can one neuron represent many features? Begin with the toy-model visualizations.</p>
+          <a class="paper" href="https://arxiv.org/abs/2209.10652" target="_blank" rel="noopener">Toy Models of Superposition<em>arXiv 2209.10652</em></a>
+          <div class="pre">Helps to know: vectors, neural networks</div>
+        </article>
+        <article>
+          <div class="stage-name">Security</div>
+          <h3>Testing the boundaries</h3>
+          <p>Can aligned models withstand adversarial inputs? Start with the problem setup and the transfer experiments.</p>
+          <a class="paper" href="https://arxiv.org/abs/2307.15043" target="_blank" rel="noopener">Universal and Transferable Adversarial Attacks on Aligned Language Models<em>arXiv 2307.15043</em></a>
+          <div class="pre">Helps to know: language models, optimization</div>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <p class="big">Stay curious.<br>Read together.</p>
+      <img class="foot-cat" src="assets/poscat-light.png" alt="" width="416" height="414">
+    </div>
+    <div class="bar"><span>POSTECH Algorithm &amp; AI Club · Second semester</span><a href="#top">Back to top</a></div>
+  </div>
+</footer>
+
+<script>
+const header = document.getElementById('masthead');
+addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 8), { passive: true });
+</script>
+</body>
+</html>

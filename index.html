@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What do models learn? — POSCAT AI Study</title>
+<meta name="description" content="POSTECH Algorithm & AI Club — a second-semester reading group on post-training RL, alignment, interpretability, and security.">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body id="top">
+<header class="top" id="masthead">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <img src="assets/poscat.png" alt="" width="44" height="44">
+      <div><b>POSCAT AI Study</b><span>POSTECH Algorithm &amp; AI Club · 2nd semester</span></div>
+    </a>
+    <nav aria-label="Sections">
+      <a href="#sessions">Sessions</a>
+      <a href="reading.html">Reading</a>
+      <a href="game.html">Mini game</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1>What do models learn?</h1>
+        <p class="lede">A semester of paper reading on how learning shapes capability, intent, and behavior.</p>
+        <ol class="path" aria-label="Semester path">
+          <li><i class="n">1</i><b>Post-training RL</b><span>Build capability</span></li>
+          <li><i class="n">2</i><b>Alignment</b><span>Follow human intent</span></li>
+          <li><i class="n">3</i><b>Interpretability</b><span>Understand learned behavior</span></li>
+          <li><i class="n">4</i><b>Security</b><span>Probe vulnerabilities</span></li>
+        </ol>
+      </div>
+      <div class="stage">
+        <button class="play" id="play" aria-label="POSCAT playing with a star. Press to make it swat.">
+          <div class="rock">
+            <img class="cat" src="assets/cat.png" alt="">
+            <img class="star" src="assets/star.png" alt="">
+            <img class="paws" src="assets/paws.png" alt="">
+            <img class="arcs" src="assets/arcs.png" alt="">
+          </div>
+        </button>
+        <p class="hint">Tap the cat</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="sessions">
+    <div class="wrap">
+      <div class="head">
+        <h2>Sessions</h2>
+        <p>Eight sessions, Thursdays at 22:00, two papers each. Topics and presenters are added as they're decided.</p>
+      </div>
+      <ol class="sessions" id="session-list"></ol>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <p class="big">Stay curious.<br>Read together.</p>
+      <img class="foot-cat" src="assets/poscat-light.png" alt="" width="416" height="414">
+    </div>
+    <div class="bar"><span>POSTECH Algorithm &amp; AI Club · Second semester</span><a href="#top">Back to top</a></div>
+  </div>
+</footer>
+
+<script>
+/* Edit sessions here. Leave title empty for sessions not yet announced. */
+const SESSIONS = [
+  { date: "Oct 8", title: "Introduction", who: "김민준",
+    abstract: "An introduction to the study: its goals, format, and the path from post-training RL through alignment and interpretability to security.",
+    papers: [{ title: "Let's Verify Step by Step", href: "https://openreview.net/forum?id=v8L0pN6EOi", src: "OpenReview" }] },
+  { date: "Oct 15" },
+  { date: "Nov 5" },
+  { date: "Nov 12" },
+  { date: "Nov 19" },
+  { date: "Nov 26" },
+  { date: "Dec 3" },
+  { date: "Dec 10" }
+];
+
+const list = document.getElementById('session-list');
+SESSIONS.forEach((s, i) => {
+  const li = document.createElement('li');
+  const no = `<span class="no">${i + 1}</span>`;
+  if (!s.title) {
+    li.className = 'pending';
+    li.innerHTML = `<div class="row">${no}<span class="date">${s.date || 'Date TBA'}</span><span class="title">To be announced</span><span class="who">—</span><span></span></div>`;
+  } else {
+    const papers = (s.papers || []).map(p =>
+      `<li><a href="${p.href}" target="_blank" rel="noopener">${p.title}${p.src ? `<span>${p.src}</span>` : ''}</a></li>`).join('');
+    li.innerHTML = `<details><summary class="row">${no}<span class="date">${s.date || 'Date TBA'}</span><span class="title">${s.title}</span><span class="who">${s.who || 'TBA'}</span><span class="chev" aria-hidden="true"></span></summary>
+      <div class="more"><div>${s.abstract ? `<h4>About</h4><p>${s.abstract}</p>` : ''}${papers ? `<h4>Reading</h4><ul>${papers}</ul>` : ''}</div></div></details>`;
+  }
+  list.appendChild(li);
+});
+
+const play = document.getElementById('play');
+play.addEventListener('click', () => {
+  play.classList.remove('swat'); void play.offsetWidth; play.classList.add('swat');
+});
+play.querySelector('.star').addEventListener('animationend', e => {
+  if (e.animationName === 'spin') play.classList.remove('swat');
+});
+
+const header = document.getElementById('masthead');
+addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 8), { passive: true });
+
+/* Hero blurs and fades out as it scrolls away, and back in on the way up. */
+const hero = document.querySelector('.hero .wrap');
+const still = matchMedia('(prefers-reduced-motion: reduce)');
+let ticking = false;
+function fadeHero() {
+  ticking = false;
+  if (still.matches) { hero.style.cssText = ''; return; }
+  const p = Math.min(Math.max(scrollY / (hero.offsetHeight * 0.7), 0), 1);
+  const e = p * p * (3 - 2 * p);
+  hero.style.opacity = 1 - e;
+  hero.style.filter = e ? `blur(${e * 10}px)` : '';
+  hero.style.transform = e ? `translateY(${e * -40}px) scale(${1 - e * 0.04})` : '';
+  hero.style.pointerEvents = p > 0.9 ? 'none' : '';
+}
+addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(fadeHero); } }, { passive: true });
+addEventListener('resize', fadeHero);
+still.addEventListener('change', fadeHero);
+fadeHero();
+</script>
+</body>
+</html>
