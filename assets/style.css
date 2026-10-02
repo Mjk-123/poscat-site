@@ -155,14 +155,14 @@ footer a{color:var(--paper)}
 .tag{display:inline-block;font:500 13px/1 var(--sans);color:var(--ink-2);padding:9px 14px;border:1px dashed var(--ink-2);border-radius:999px}
 body[data-view=play] .arcade-head,body[data-view=play] .arcade-list{display:none}
 .arcade-play{padding-top:28px}
-.arcade-play{--pw:min(560px,calc((100svh - 250px) * var(--ar,.75)))}
+.arcade-play{--pw:min(560px,max(340px,calc((100svh - 250px) * var(--ar,.75))))}
 .arcade-bar{display:flex;align-items:baseline;gap:8px 20px;flex-wrap:wrap;width:min(100%,var(--pw));margin:0 auto 18px}
 .arcade-play.settled .arcade-bar{transition:width .6s cubic-bezier(.22,.8,.24,1)}
 .arcade-play:has(.gh.board-open) .arcade-bar{width:min(100%,calc(var(--pw) + 308px))}
 @media (max-width:880px){.arcade-play:has(.gh.board-open) .arcade-bar{width:min(100%,var(--pw))}}
 .arcade-bar .back{font:500 15px/1.4 var(--sans);text-decoration:none}
 .arcade-bar h2{font:700 clamp(28px,3.4vw,40px)/1.1 var(--sans);letter-spacing:-.03em;margin:0;order:-1;width:100%}
-.gh{--pw:min(560px,calc((100svh - 250px) * var(--ar)));--board:280px;--ease:cubic-bezier(.22,.8,.24,1)}
+.gh{--pw:min(560px,max(340px,calc((100svh - 250px) * var(--ar))));--board:280px;--ease:cubic-bezier(.22,.8,.24,1)}
 .gh-layout{display:grid;justify-content:center;grid-template-columns:min(100%,var(--pw)) 0px;column-gap:0;transition:grid-template-columns .6s var(--ease),column-gap .6s var(--ease)}
 .gh.board-open .gh-layout{grid-template-columns:min(100%,var(--pw)) var(--board);column-gap:28px}
 .gh-play{min-width:0}
