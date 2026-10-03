@@ -59,6 +59,9 @@ begin
   return r;
 end $$;
 
+-- needed when "Automatically expose new tables" is off
+grant usage on schema public to anon, authenticated;
+
 revoke execute on function public.top_scores(text, int) from public;
 revoke execute on function public.submit_score(uuid, text, text, int, boolean) from public;
 grant execute on function public.top_scores(text, int) to anon, authenticated;
