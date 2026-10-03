@@ -26,7 +26,8 @@ import { board } from './board.js';
 const STEP = 1 / 60;
 const NAME_KEY = 'poscat.arcade.name';
 const esc = v => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const newId = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+const newId = () => crypto.randomUUID?.() ?? '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, c =>
+  (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)); // uuid v4
 
 export class Game {
   static meta = { id: 'game', width: 360, height: 560, howto: '' };
@@ -215,6 +216,7 @@ export class GameHost {
   }
   destroy() {
     this.state = 'destroyed';
+    clearInterval(this._poll);
     cancelAnimationFrame(this._raf);
     this._unbind.forEach(off => off());
     try { this.game.destroy(); } catch (err) { console.error(err); }
@@ -227,8 +229,10 @@ export class GameHost {
     this.$board.setAttribute('aria-hidden', String(!open));
     this.$boardBtn.setAttribute('aria-expanded', String(open));
     this.$boardBtn.textContent = open ? 'Hide dashboard' : 'View dashboard';
+    clearInterval(this._poll);
     if (!open) return;
     this.refreshBoard();
+    if (board.shared) this._poll = setInterval(() => this.refreshBoard(), 20000); // others' new scores
     // stacked layout: the panel opens below the stage, so bring it into view
     if (matchMedia('(max-width: 880px)').matches) {
       setTimeout(() => this.$board.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 380);
@@ -236,12 +240,18 @@ export class GameHost {
   }
 
   async refreshBoard() {
-    const rows = await board.top(this.meta.id, 5);
+    let rows;
+    try { rows = await board.top(this.meta.id, 5, this.runId); }
+    catch (err) {
+      console.error(err);
+      if (!this.$rank.children.length) this.$rank.innerHTML = '<li class="gh-empty">Could not load the leaderboard. Try again in a moment.</li>';
+      return;
+    }
     if (this.state === 'destroyed') return;
     const date = t => new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
     this.$rank.innerHTML = rows.length
       ? rows.map((r, i) => `
-        <li class="gh-row${r.id === this.runId ? ' me' : ''}" style="--i:${i}">
+        <li class="gh-row${r.mine ? ' me' : ''}" style="--i:${i}">
           <span class="gh-pos">${i + 1}</span>
           <span class="gh-who"><b>${esc(r.name)}</b><small>${r.won ? 'Won · ' : ''}${date(r.at)}</small></span>
           <span class="gh-pts">${r.score}</span>

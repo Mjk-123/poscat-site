@@ -1,31 +1,31 @@
 /*
- * Leaderboard storage. Every method is async so a shared backend can replace
- * the local one later without touching the host: implement top() and submit()
- * against the service and swap `board` below.
+ * Leaderboard storage, shared through Supabase when config.js has a project,
+ * otherwise kept in this browser. Both expose the same async API:
  *
- * Entry: { id, name, score, won, at }  — id is one per round, so submitting
- * the same round again (pause, then game over) updates it instead of adding.
+ *   top(game, n, runId)  → [{ name, score, won, at, mine }]
+ *   submit(game, { id, name, score, won }) → { rank }
+ *
+ * id is one per round, so submitting the same round again (pause, then game
+ * over) updates that round instead of adding a new row.
  */
+import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
+
+const order = (a, b) => b.score - a.score || a.at - b.at;
+
+/* ---- this browser only ---- */
 
 const key = game => `poscat.arcade.${game}.board`;
 const MAX = 100;
-
-function read(game) {
-  try { return JSON.parse(localStorage.getItem(key(game))) || []; } catch { return []; }
-}
-function write(game, list) {
-  try { localStorage.setItem(key(game), JSON.stringify(list)); } catch {}
-}
-const order = (a, b) => b.score - a.score || a.at - b.at;
+const read = game => { try { return JSON.parse(localStorage.getItem(key(game))) || []; } catch { return []; } };
+const write = (game, list) => { try { localStorage.setItem(key(game), JSON.stringify(list)); } catch {} };
 
 export const localBoard = {
   shared: false,
 
-  async top(game, n = 5) {
-    return read(game).sort(order).slice(0, n);
+  async top(game, n = 5, runId = null) {
+    return read(game).sort(order).slice(0, n).map(e => ({ ...e, mine: e.id === runId }));
   },
 
-  // Returns { entry, rank } with rank counted from 1.
   async submit(game, { id, name, score, won }) {
     const list = read(game);
     let entry = list.find(e => e.id === id);
@@ -39,8 +39,43 @@ export const localBoard = {
     }
     list.sort(order);
     write(game, list.slice(0, MAX));
-    return { entry, rank: list.indexOf(entry) + 1 };
+    return { rank: list.indexOf(entry) + 1 };
   },
 };
 
-export const board = localBoard;
+/* ---- shared through Supabase (see supabase/setup.sql) ---- */
+
+async function rpc(fn, body) {
+  const headers = { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' };
+  if (SUPABASE_KEY.startsWith('eyJ')) headers.Authorization = `Bearer ${SUPABASE_KEY}`; // legacy anon JWT
+  const res = await fetch(`${SUPABASE_URL.replace(/\/$/, '')}/rest/v1/rpc/${fn}`, {
+    method: 'POST', headers, body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`${fn} failed: ${res.status} ${await res.text()}`);
+  return res.json();
+}
+
+// The server only reveals a short hash of each round id, so "mine" is matched by hash.
+async function tag(id) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(id));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+}
+
+export const sharedBoard = {
+  shared: true,
+
+  async top(game, n = 5, runId = null) {
+    const [rows, mineTag] = await Promise.all([
+      rpc('top_scores', { p_game: game, p_limit: n }),
+      runId ? tag(runId) : null,
+    ]);
+    return rows.map(r => ({ name: r.name, score: r.score, won: r.won, at: Date.parse(r.at), mine: r.tag === mineTag }));
+  },
+
+  async submit(game, { id, name, score, won }) {
+    const rank = await rpc('submit_score', { p_id: id, p_game: game, p_name: name, p_score: score, p_won: won });
+    return { rank };
+  },
+};
+
+export const board = SUPABASE_URL && SUPABASE_KEY ? sharedBoard : localBoard;
