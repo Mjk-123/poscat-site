@@ -80,7 +80,7 @@
    Optional per session: who, abstract, slides [{ title, href, src }] (files in assets/slides/),
    papers [{ title, href, src }]. */
 const SESSIONS = [
-  { date: "Oct 8", title: "Post-training RL 1부: REINFORCE에서 PPO까지", who: "김민준",
+  { date: "Oct 8", title: "Foundations of Post-training RL", who: "김민준",
     abstract: "사전학습된 LLM을 강화학습으로 후속학습하는 데 쓰이는 policy gradient 알고리즘의 흐름을 정리합니다. MDP와 Bellman 방정식을 기초로, 샘플만으로 gradient를 추정하는 REINFORCE에서 출발해 baseline과 advantage로 분산을 줄인 A2C, KL 제약으로 업데이트 크기를 제한한 TRPO, 그리고 clip과 GAE로 이를 간단하게 근사한 PPO까지 각 알고리즘이 앞 단계의 어떤 문제를 해결했는지 따라갑니다. 모든 유도는 발표 안에서 정의한 기호만으로 처음부터 끝까지 따라갈 수 있도록 self-contained한 수학 표기로 정리했습니다. 마지막으로 이 알고리즘들이 LLM에서 어떻게 쓰이는지 RLHF와 RLVR을 통해 간단히 소개하고, 자세한 내용은 2부에서 이어갑니다.",
     slides: [
       { title: "Intro", href: "assets/slides/2026-10-08-intro.pdf", src: "PDF · 13 slides" },
