@@ -124,7 +124,7 @@ play.querySelector('.star').addEventListener('animationend', e => {
 const header = document.getElementById('masthead');
 addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 8), { passive: true });
 
-/* Hero blurs and fades out as it scrolls away, and back in on the way up. */
+/* Hero fades out as it scrolls away, and back in on the way up. */
 const hero = document.querySelector('.hero .wrap');
 const still = matchMedia('(prefers-reduced-motion: reduce)');
 let ticking = false;
@@ -134,12 +134,10 @@ function fadeHero() {
   const p = Math.min(Math.max(scrollY / (hero.offsetHeight * 0.7), 0), 1);
   const e = p * p * (3 - 2 * p);
   const gone = e > 0.995;
-  // while fading: own layer, cat paused (blurring a moving picture costs a lot);
-  // once gone: not painted at all
+  // while fading: own layer, cat paused; once gone: not painted at all
   hero.classList.toggle('fading', e > 0 && !gone);
   hero.classList.toggle('gone', gone);
   hero.style.opacity = gone ? '' : 1 - e;
-  hero.style.filter = e && !gone ? `blur(${(e * 10).toFixed(1)}px)` : '';
   hero.style.transform = e && !gone ? `translateY(${e * -40}px) scale(${1 - e * 0.04})` : '';
   hero.style.pointerEvents = p > 0.9 ? 'none' : '';
 }

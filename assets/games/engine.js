@@ -295,6 +295,7 @@ export class GameHost {
   }
   _show({ title, text, actions, submit = false }) {
     this.$pause.disabled = true;
+    this._dirty = true;
     const done = this.submitted && this.submitted.score === this.score;
     const canSubmit = submit && this.runId && this.score > 0;
     this.card.innerHTML = `${title ? `<h2>${title}</h2>` : ''}${text ? `<p>${text}</p>` : ''}${canSubmit ? `
@@ -321,11 +322,14 @@ export class GameHost {
     if (this.state === 'playing') {
       this._acc += Math.min((now - this._last) / 1000, 0.25);
       while (this._acc >= STEP) { this.game.update(STEP); this._acc -= STEP; }
+      this._draw();
+    } else if (this._dirty) {
+      this._draw(); // paused / overlays: the picture is still, draw it once
     }
     this._last = now;
-    this._draw();
   };
   _draw() {
+    this._dirty = false;
     const { ctx, canvas } = this;
     const k = canvas.width / this.width;
     ctx.setTransform(1, 0, 0, 1, 0, 0);

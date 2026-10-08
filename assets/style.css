@@ -19,7 +19,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .wrap{max-width:var(--wrap);margin:0 auto;padding:0 28px}
 
 /* header */
-.top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .2s}
+.top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--paper) 96%,transparent);border-bottom:1px solid transparent;transition:border-color .2s}
 .top.scrolled{border-bottom-color:var(--rule)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
@@ -34,7 +34,7 @@ nav a[aria-current=page]{color:var(--ink);background:var(--paper-2)}
 /* hero */
 .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center;min-height:min(74vh,680px);padding-top:24px;padding-bottom:40px}
 .hero .wrap{transform-origin:50% 0}
-.hero .wrap.fading{will-change:opacity,filter,transform}
+.hero .wrap.fading{will-change:opacity,transform}
 .hero .wrap.fading :is(.rock,.star,.arcs),.hero .wrap.gone :is(.rock,.star,.arcs){animation-play-state:paused}
 .hero .wrap.gone{visibility:hidden}
 .hero h1{font:700 clamp(52px,7.2vw,92px)/.98 var(--sans);letter-spacing:-.035em;margin:0 0 28px}
