@@ -130,12 +130,17 @@ const still = matchMedia('(prefers-reduced-motion: reduce)');
 let ticking = false;
 function fadeHero() {
   ticking = false;
-  if (still.matches) { hero.style.cssText = ''; return; }
+  if (still.matches) { hero.style.cssText = ''; hero.className = 'wrap'; return; }
   const p = Math.min(Math.max(scrollY / (hero.offsetHeight * 0.7), 0), 1);
   const e = p * p * (3 - 2 * p);
-  hero.style.opacity = 1 - e;
-  hero.style.filter = e ? `blur(${e * 10}px)` : '';
-  hero.style.transform = e ? `translateY(${e * -40}px) scale(${1 - e * 0.04})` : '';
+  const gone = e > 0.995;
+  // while fading: own layer, cat paused (blurring a moving picture costs a lot);
+  // once gone: not painted at all
+  hero.classList.toggle('fading', e > 0 && !gone);
+  hero.classList.toggle('gone', gone);
+  hero.style.opacity = gone ? '' : 1 - e;
+  hero.style.filter = e && !gone ? `blur(${(e * 10).toFixed(1)}px)` : '';
+  hero.style.transform = e && !gone ? `translateY(${e * -40}px) scale(${1 - e * 0.04})` : '';
   hero.style.pointerEvents = p > 0.9 ? 'none' : '';
 }
 addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(fadeHero); } }, { passive: true });
