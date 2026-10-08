@@ -114,6 +114,7 @@ details summary:hover .title{color:var(--peri-deep)}
 .more h4{font:500 14px/1.3 var(--sans);color:var(--peri-deep);margin:24px 0 8px}
 .more > div > h4:first-child{margin-top:6px}
 .more p{margin:0;font:400 18px/1.6 var(--serif);color:var(--ink)}
+.more p:lang(ko){font:400 16.5px/1.8 var(--sans);word-break:keep-all}
 .more ul{margin:0;padding:0;list-style:none;border-top:1px solid var(--rule)}
 .more li{border-bottom:1px solid var(--rule)}
 .more li a{display:block;padding:12px 0;font:500 16px/1.4 var(--sans);color:var(--ink);text-decoration:none}
